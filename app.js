@@ -1,23 +1,21 @@
 import * as http from 'http';
 import { Dog } from './modules/dog.js'
+import express from 'express';
 
-const twigg = new Dog('twigg', 16);
+const app = express();
 const port = 3000;
+const twigg = new Dog('twigg', 16);
 
-const server = http.createServer((req, res) => {
-    console.log(req.url);
-    if (req.url == '/dog') {
-        console.log("SERVER:", JSON.stringify(twigg));
-        res.write(JSON.stringify(twigg));
-    } else {
-        res.write('potatos...')
-    }
-    res.end();
+app.get('/dog', (req, res) => {
+    console.log("SERVER:", JSON.stringify(twigg));
+    res.send(JSON.stringify(twigg));
 })
 
-server.listen(port, '0.0.0.0', () => { console.log(`archipelago listening on :${port}`) })
+const server = app.listen(port, () => {
+    console.log(`archipelago listening on :${port}`)
 
-setTimeout(() => { console.log('closing'); server.close() }, 2000);
+    setTimeout(() => { console.log('closing'); server.close() }, 2000);
+})
 
 setTimeout(() => {
     http.get(`http://localhost:${port}/dog`, res => {
